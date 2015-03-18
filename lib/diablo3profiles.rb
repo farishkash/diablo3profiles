@@ -5,10 +5,23 @@ module Diablo3profiles
   include HTTParty
   base_uri "https://us.api.battle.net/d3"
 
-  def self.find(id)
-  	get("/profile/#{id}/?locale=en_US&apikey=3pk433rfduzst7zhkjppmsv69egud7jm")
+  attr_accessor :battleTag, :heroes
+
+  def initialize(battleTag, heroes)
+  	self.battleTag = battleTag
+  	self.heroes = heroes
+  end
+
+
+  def self.find(battleTag)
+  	response = get("/profile/#{battleTag}/?locale=en_US&apikey=YOURAPIKEY")
+  	if response.success?
+  		self.new(response["heroes"])
+  	else
+  		raise response.response
+  	end
   end
 
 end
 
-Diablo3profiles.find("farish-1632")
+Diablo3profiles.find("your profile, replace hash with hyphen example john#1422 should be john-1422")
